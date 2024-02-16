@@ -15,20 +15,24 @@ It will prompt you to authorize the plugin, please do so.
 
 ## Usage
 
-This plugin provides two commands to be used by custom upstreams:
+This plugin provides three commands to be used by custom upstreams:
 
 ### upstream:require
 
 Use it to require dependencies in your upstream-configuration folder.
 
+### upstream:remove
+
+Use it to remove dependencies in your upstream-configuration folder.
+
 ```
 composer upstream-require drupal/ctools
 ```
 
-### upstream:update-dependencies
+### upstream:lock-dependencies
 
-Use it to use version locked dependencies in your upstream (and to update those versions). This way you can pin the versions for your upstream dependencies.
+Use it command to lock global pinned dependencies to the versions in the upstream-configuration/composer.lock file. This command will also update unpinned packages in the custom-upstream.
 
 ```
-composer upstream:update-dependencies
+composer upstream:lock-dependencies
 ```
