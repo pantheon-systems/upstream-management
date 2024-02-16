@@ -40,11 +40,8 @@ trait UpstreamManagementTrait
         if ($isPantheonSite) {
             // @codingStandardsIgnoreLine
             $io->write("<info>The upstream:require should only be used on Pantheon sites for testing purposes. Your git repo URL is $gitRepoUrl.</info>");
-            return
-
+            return;
         }
-
-        // @codingStandardsIgnoreLine
         $io->writeError("<info>See https://pantheon.io/docs/create-custom-upstream for information on how to create a custom upstream.</info>" . PHP_EOL);
         throw new \RuntimeException("Cannot use upstream-require command with this project.");
     }
