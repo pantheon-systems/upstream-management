@@ -5,7 +5,7 @@
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7",
         "phpunit/phpunit": "^9.5",
-        "composer/composer": "^2.5",
+        "composer/composer": ">=2.5 <2.7",
         "symfony/filesystem": "^5|^6",
         "symfony/process": "^5|^6"
     },
