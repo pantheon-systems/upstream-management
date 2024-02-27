@@ -29,7 +29,7 @@ class UpstreamManagementCommandTest extends TestCase
     protected function createSut()
     {
         echo "Cloning DCM to $this->sut";
-        passthru('git clone https://github.com/pantheon-systems/drupal-composer-managed.git ' . $this->sut);
+        passthru('git clone https://github.com/pantheon-upstreams/drupal-composer-managed.git ' . $this->sut);
 
         // Override php version for this test.
         $this->pregReplaceSutFile(
