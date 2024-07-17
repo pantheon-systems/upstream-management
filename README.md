@@ -21,12 +21,16 @@ This plugin provides three commands to be used by custom upstreams:
 
 Use it to require dependencies in your upstream-configuration folder.
 
+```
+composer upstream:require drupal/ctools
+```
+
 ### upstream:remove
 
 Use it to remove dependencies in your upstream-configuration folder.
 
 ```
-composer upstream-require drupal/ctools
+composer upstream:remove drupal/ctools
 ```
 
 ### upstream:lock-dependencies
