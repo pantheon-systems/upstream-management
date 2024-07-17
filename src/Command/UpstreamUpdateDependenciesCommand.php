@@ -30,7 +30,7 @@ class UpstreamUpdateDependenciesCommand extends BaseCommand
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = $this->getIO();
         $composer = $this->getComposer();

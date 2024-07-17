@@ -29,7 +29,7 @@ class UpstreamManagementCommandTest extends TestCase
     protected function createSut()
     {
         echo "Cloning DCM to $this->sut";
-        passthru('git clone https://github.com/pantheon-systems/drupal-composer-managed.git ' . $this->sut);
+        passthru('git clone https://github.com/pantheon-upstreams/drupal-composer-managed.git ' . $this->sut);
 
         // Override php version for this test.
         $this->pregReplaceSutFile(
@@ -154,7 +154,7 @@ class UpstreamManagementCommandTest extends TestCase
         $process = $this->composer('update-upstream-dependencies');
         $this->assertTrue($process->isSuccessful(), $process->getOutput() . PHP_EOL . $process->getErrorOutput());
         $output = $process->getOutput() . PHP_EOL . $process->getErrorOutput();
-        $this->assertMatchesRegularExpression('#"drupal/ctools": "4\.0\.3"#', $output);
+        $this->assertMatchesRegularExpression('#"drupal/ctools": "4\.0\.4"#', $output);
         $process = $this->composer('info', ['--format=json']);
         $output = $process->getOutput();
         $this->assertTrue($process->isSuccessful());
