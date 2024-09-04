@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use PantheonSystems\UpstreamManagement\UpstreamManagementTrait;
 
 /**
- * The "upstream:update-dependencies" command.
+ * The "upstream:lock-dependencies" command.
  */
 class UpstreamUpdateDependenciesCommand extends BaseCommand
 {
@@ -21,10 +21,10 @@ class UpstreamUpdateDependenciesCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('upstream:update-dependencies')
-            ->setAliases(['update-upstream-dependencies'])
-            ->setDescription('Update upstream dependencies (when using pinned versions).')
-            ->setHelp('Lorem ipsum dolor sit atem.');
+            ->setName('upstream:lock-dependencies')
+            ->setAliases(['lock-upstream-dependencies'])
+            ->setDescription('Lock global upstream dependencies (when using pinned versions).')
+            ->setHelp('Lock global pinned dependencies to the version currently in the upstream-configuration/composer.lock file.');
     }
 
     /**
