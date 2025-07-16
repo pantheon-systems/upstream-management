@@ -5,6 +5,7 @@ namespace PantheonSystems\UpstreamManagement\Command;
 use Composer\Command\RemoveCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use PantheonSystems\UpstreamManagement\UpstreamManagementTrait;
 
 /**
@@ -40,6 +41,21 @@ class UpstreamRemoveCommand extends RemoveCommand
 
         // This command can only be used in custom upstreams
         $this->failUnlessIsCustomUpstream($io, $composer);
+
+        // Show warning and ask for confirmation
+        $helper = $this->getHelper('question');
+        $packageList = implode(', ', $packages);
+        
+        $io->writeError("<warning>WARNING: You are about to remove the following package(s) from the upstream: $packageList</warning>");
+        $io->writeError("<warning>Before proceeding, ensure these packages are uninstalled from all downstream CMS sites.</warning>");
+        $io->writeError("<warning>Downstream sites that have not uninstalled these packages will encounter errors when they apply the upstream update.</warning>");
+        $io->writeError("");
+        
+        $question = new ConfirmationQuestion("Are you sure you want to continue with the removal? (y/N) ", false);
+        if (!$helper->ask($input, $output, $question)) {
+            $io->writeError("Operation cancelled.");
+            return 1;
+        }
         $hasNoUpdate = !empty($options['no-update']);
 
         // Remove --working-dir, --no-update and --no-install, if provided
