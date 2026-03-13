@@ -18,7 +18,7 @@ class UpstreamRequireCommand extends RequireCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure() :void
     {
         parent::configure();
         $this
