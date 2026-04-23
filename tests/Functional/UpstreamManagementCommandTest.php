@@ -31,9 +31,10 @@ class UpstreamManagementCommandTest extends TestCase
         echo "Cloning DCM to $this->sut";
         passthru('git clone https://github.com/pantheon-upstreams/drupal-composer-managed.git ' . $this->sut);
 
-        // Override php version for this test.
+        // Override php version for this test. The regex matches any major.minor
+        // version so it stays correct as drupal-composer-managed updates its default.
         $this->pregReplaceSutFile(
-            '#php_version: 8.1#',
+            '#php_version: \d+\.\d+#',
             'php_version: ' . substr(phpversion(), 0, 3),
             'pantheon.upstream.yml'
         );
