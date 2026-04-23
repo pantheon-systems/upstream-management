@@ -61,5 +61,5 @@ composer test
 This package is published on [Packagist](https://packagist.org/packages/pantheon-systems/upstream-management) and updated automatically when a new GitHub release is created.
 
 1. Update `composer.json` if needed
-2. Create a new GitHub release with a semver tag (e.g. `v1.2.3`)
+2. Create a new GitHub release with a semver tag (e.g. `v2.3.4`)
 3. Packagist picks up the new release automatically via webhook

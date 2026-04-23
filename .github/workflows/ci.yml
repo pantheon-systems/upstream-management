@@ -22,7 +22,7 @@ jobs:
       - name: PHPCompatibility
         uses: pantheon-systems/phpcompatibility-action@44be5a8381691b9a209404a3f45df8254f1ce08f # v1.1.2
         with:
-          test-versions: 8.1-
+          test-versions: 7.4-
 
   phpcs:
     runs-on: ubuntu-latest
@@ -48,6 +48,8 @@ jobs:
         os:
           - ubuntu-latest
         php-version:
+          - php: "7.4"
+          - php: "8.0"
           - php: "8.1"
           - php: "8.2"
           - php: "8.3"
