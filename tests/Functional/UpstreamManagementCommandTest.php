@@ -38,6 +38,10 @@ class UpstreamManagementCommandTest extends TestCase
             'pantheon.upstream.yml'
         );
 
+        // Update the platform PHP version to match the running PHP so that
+        // composer update can resolve dependencies (Drupal 10 requires PHP 8.1+).
+        $this->composer('config', ['platform.php', substr(phpversion(), 0, 3)]);
+
         // Run 'composer update'. This has two important impacts:
         // 1. The composer.lock file is created, which is necessary for the upstream dependency locking feature to work.
         // 2. Our preUpdate modifications are applied to the SUT.
