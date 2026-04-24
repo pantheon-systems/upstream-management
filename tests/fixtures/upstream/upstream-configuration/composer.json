@@ -1,0 +1,6 @@
+{
+    "name": "pantheon-upstreams/upstream-configuration",
+    "description": "Upstream configuration",
+    "type": "metapackage",
+    "require": {}
+}
