@@ -4,7 +4,7 @@
     "type": "composer-plugin",
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7",
-        "phpunit/phpunit": "^9.6",
+        "phpunit/phpunit": "^13.1",
         "composer/composer": "^2.9",
         "symfony/filesystem": "^5|^6|^7",
         "symfony/process": "^5|^6|^7"
