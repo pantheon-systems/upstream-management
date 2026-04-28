@@ -9,15 +9,18 @@ on:
         description: Run arbitrary functional tests group by name or all (short and long) tests (default)
         required: true
         default: all
+
+permissions: read-all
+
 jobs:
   phpcompatibility:
     runs-on: ubuntu-latest
     name: PHP Compatibility
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: PHPCompatibility
-        uses: pantheon-systems/phpcompatibility-action@7bf1b2881e207c80ad4569874ceee225f59537d1 # v1.1.1
+        uses: pantheon-systems/phpcompatibility-action@44be5a8381691b9a209404a3f45df8254f1ce08f # v1.1.2
         with:
           test-versions: 7.4-
 
@@ -26,11 +29,11 @@ jobs:
     name: PHP Coding Standards
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Setup PHP with PECL extension
-        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # v2
+        uses: shivammathur/setup-php@fcafdd6392932010c2bd5094439b8e33be2a8a09 # v2.37.0
         with:
-          php-version: 8.2
+          php-version: 8.4
       - name: Install composer
         run: composer install --no-interaction --prefer-dist
       - name: Run tests
@@ -48,16 +51,19 @@ jobs:
           - php: "7.4"
           - php: "8.0"
           - php: "8.1"
+          - php: "8.2"
+          - php: "8.3"
+          - php: "8.4"
         php-ini-values:
           - assert.exception=1, zend.assertions=1
-      max-parallel: 3
+      max-parallel: 4
     env:
       DEPENDENCIES: ${{ matrix.dependencies }}
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install PHP with extensions
-        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # v2
+        uses: shivammathur/setup-php@fcafdd6392932010c2bd5094439b8e33be2a8a09 # v2.37.0
         with:
           php-version: ${{ matrix.php-version.php }}
           coverage: pcov

@@ -1,0 +1,10 @@
+---
+engines:
+  phpcs:
+    enabled: true
+  phpmd:
+    enabled: true
+
+exclude_paths:
+  - "vendor/**"
+  - ".github/**"
