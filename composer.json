@@ -7,7 +7,7 @@
         "phpunit/phpunit": "^9.6",
         "composer/composer": "^2.9",
         "symfony/filesystem": "^5|^6|^7",
-        "symfony/process": "^5|^6|^7"
+        "symfony/process": "^8.0.8"
     },
     "license": "MIT",
     "autoload": {
