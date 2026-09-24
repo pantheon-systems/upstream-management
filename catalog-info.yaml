@@ -1,12 +1,13 @@
+# Managed by github-terraform — do not edit manually
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: upstream-management
-  description: Auto-generated catalog info for pantheon-systems/upstream-management
+  name: "upstream-management"
+  description: "upstream-management"
   annotations:
-    backstage.io/techdocs-ref: dir:docs/
+    "backstage.io/techdocs-ref": "dir:docs/"
 spec:
-  type: tool
-  lifecycle: mature
-  owner: devx
+  type: "tool"
+  lifecycle: "mature"
+  owner: "developer-experience"
