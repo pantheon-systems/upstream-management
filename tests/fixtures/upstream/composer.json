@@ -1,0 +1,15 @@
+{
+    "name": "pantheon-upstreams/drupal-composer-managed",
+    "description": "Test fixture simulating a Pantheon upstream project",
+    "type": "project",
+    "require": {
+        "pantheon-upstreams/upstream-configuration": "*"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "upstream-configuration"
+        }
+    ],
+    "minimum-stability": "stable"
+}

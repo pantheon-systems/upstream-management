@@ -28,24 +28,15 @@ class UpstreamManagementCommandTest extends TestCase
 
     protected function createSut()
     {
-        echo "Cloning DCM to $this->sut";
-        passthru('git clone https://github.com/pantheon-upstreams/drupal-composer-managed.git ' . $this->sut);
-
-        // Override php version for this test.
-        $this->pregReplaceSutFile(
-            '#php_version: 8.1#',
-            'php_version: ' . substr(phpversion(), 0, 3),
-            'pantheon.upstream.yml'
-        );
-
-        // Run 'composer update'. This has two important impacts:
-        // 1. The composer.lock file is created, which is necessary for the upstream dependency locking feature to work.
-        // 2. Our preUpdate modifications are applied to the SUT.
-        $this->composer('update');
+        $fixtureDir = dirname(__DIR__) . '/fixtures/upstream';
+        $fs = new Filesystem();
+        $fs->mirror($fixtureDir, $this->sut);
 
         $this->composer('config', ['minimum-stability', 'dev']);
         $this->composer('config', ['repositories.upstream', 'path', dirname(__DIR__, 2)]);
         $this->composer('config', ['--no-plugins', 'allow-plugins.pantheon-systems/upstream-management', 'true']);
+        // Installing our plugin creates the root composer.lock, which is necessary
+        // for the upstream dependency locking feature to work.
         $this->composer('require', ['pantheon-systems/upstream-management', '*']);
     }
 
@@ -53,7 +44,7 @@ class UpstreamManagementCommandTest extends TestCase
     {
         $this->createSut();
         // 'composer upstream require' will return an error if used on the Pantheon platform upstream.
-        $process = $this->composer('upstream-require', ['drupal/ctools']);
+        $process = $this->composer('upstream-require', ['psr/log']);
         $this->assertFalse($process->isSuccessful());
         $output = $process->getErrorOutput();
         $this->assertStringContainsString(
@@ -69,17 +60,17 @@ class UpstreamManagementCommandTest extends TestCase
         $this->assertSutFileContains('"customer-org/custom-upstream"', 'composer.json');
 
         // Once we change the name of the upstream, 'composer upstream require' should work.
-        $process = $this->composer('upstream-require', ['drupal/ctools']);
+        $process = $this->composer('upstream-require', ['psr/log']);
         $this->assertTrue($process->isSuccessful());
         $this->assertSutFileDoesNotExist('upstream-configuration/composer.lock');
-        $this->assertSutFileContains('"drupal/ctools"', 'upstream-configuration/composer.json');
-        $this->assertSutFileNotContains('"drupal/ctools"', 'composer.json');
-        $this->assertSutFileNotContains('"drupal/ctools"', 'composer.lock');
+        $this->assertSutFileContains('"psr/log"', 'upstream-configuration/composer.json');
+        $this->assertSutFileNotContains('"psr/log"', 'composer.json');
+        $this->assertSutFileNotContains('"psr/log"', 'composer.lock');
         $process = $this->composer('update');
         $output = $process->getOutput() . PHP_EOL . $process->getErrorOutput();
-        $this->assertStringContainsString('drupal/ctools', $output);
-        $this->assertSutFileNotContains('"drupal/ctools"', 'composer.json');
-        $this->assertSutFileContains('drupal/ctools', 'composer.lock');
+        $this->assertStringContainsString('psr/log', $output);
+        $this->assertSutFileNotContains('"psr/log"', 'composer.json');
+        $this->assertSutFileContains('psr/log', 'composer.lock');
         $this->assertSutFileDoesNotExist('upstream-configuration/composer.lock');
     }
 
@@ -93,27 +84,27 @@ class UpstreamManagementCommandTest extends TestCase
             'composer.json'
         );
 
-        // Add drupal/ctools to the project; only allow version 4.0.2.
-        $process = $this->composer('upstream-require', ['drupal/ctools:4.0.2']);
+        // Add psr/log to the project; only allow version 1.1.3.
+        $process = $this->composer('upstream-require', ['psr/log:1.1.3']);
         $this->assertTrue($process->isSuccessful(), $process->getOutput() . PHP_EOL . $process->getErrorOutput());
         $this->assertSutFileDoesNotExist('upstream-configuration/composer.lock');
 
         // Running 'update-upstream-dependencies' creates our locked composer.json
-        // file. drupal/ctools will not update past version 4.0.2 until updated.
+        // file. psr/log will not update past version 1.1.3 until updated.
         $process = $this->composer('update-upstream-dependencies');
         $this->assertTrue($process->isSuccessful(), $process->getOutput() . PHP_EOL . $process->getErrorOutput());
         $this->assertSutFileExists('upstream-configuration/composer.lock');
         $this->assertSutFileExists('upstream-configuration/locked/composer.json');
         $this->assertMatchesRegularExpression(
-            '#drupal/ctools"[^"]*"4\.0\.2#',
+            '#psr/log"[^"]*"1\.1\.3#',
             $this->sutFileContents('upstream-configuration/composer.json')
         );
         $process = $this->composer('info');
         $output = $process->getOutput();
-        $this->assertStringNotContainsString('drupal/ctools', $output);
-        $this->assertSutFileContains('"drupal/ctools"', 'upstream-configuration/composer.json');
+        $this->assertStringNotContainsString('psr/log', $output);
+        $this->assertSutFileContains('"psr/log"', 'upstream-configuration/composer.json');
 
-        // Run `composer update`. This should bring in the locked (4.0.2) version of drupal/ctools.
+        // Run `composer update`. This should bring in the locked (1.1.3) version of psr/log.
         $this->assertSutFileExists('upstream-configuration/composer.lock');
         $process = $this->composer('update');
         $this->assertTrue($process->isSuccessful(), $process->getOutput() . PHP_EOL . $process->getErrorOutput());
@@ -121,46 +112,46 @@ class UpstreamManagementCommandTest extends TestCase
         $output = $process->getErrorOutput();
         $process = $this->composer('info', ['--format=json']);
         $output = $process->getOutput();
-        $this->assertPackageVersionMatchesRegularExpression('drupal/ctools', '#4\.0\.2#', $output);
+        $this->assertPackageVersionMatchesRegularExpression('psr/log', '#1\.1\.3#', $output);
 
-        // Set drupal/ctools constraint back to ^4. At this point, though, the
-        // upstream dependency lock file is still at version 4.0.2.
-        $process = $this->composer('upstream-require', ['drupal/ctools:^4', '--', '--no-update']);
+        // Set psr/log constraint back to ^1.1. At this point, though, the
+        // upstream dependency lock file is still at version 1.1.3.
+        $process = $this->composer('upstream-require', ['psr/log:^1.1', '--', '--no-update']);
         $this->assertTrue($process->isSuccessful(), $process->getOutput() . PHP_EOL . $process->getErrorOutput());
         $output = $process->getOutput() . PHP_EOL . $process->getErrorOutput();
         $this->assertMatchesRegularExpression(
-            '#drupal/ctools"[^"]*"\^4#',
+            '#psr/log"[^"]*"\^1\.1#',
             $this->sutFileContents('upstream-configuration/composer.json')
         );
 
-        // Run `composer update` again. This should not affect drupal/ctools; it should stay at version 4.0.2.
+        // Run `composer update` again. This should not affect psr/log; it should stay at version 1.1.3.
         $process = $this->composer('update');
         $this->assertTrue($process->isSuccessful(), $process->getOutput() . PHP_EOL . $process->getErrorOutput());
         $this->assertMatchesRegularExpression(
-            '#drupal/ctools"[^"]*"\^4#',
+            '#psr/log"[^"]*"\^1\.1#',
             $this->sutFileContents('upstream-configuration/composer.json')
         );
         $output = $process->getOutput() . PHP_EOL . $process->getErrorOutput();
-        $this->assertStringNotContainsString('drupal/ctools (4.0.2 => 4.)', $output);
+        $this->assertStringNotContainsString('psr/log (1.1.3 => 1.1.', $output);
         $this->assertStringNotContainsString('No locked dependencies in the upstream', $output);
         $process = $this->composer('info', ['--format=json']);
         $output = $process->getOutput();
         $this->assertTrue($process->isSuccessful());
-        $this->assertPackageVersionMatchesRegularExpression('drupal/ctools', '#4\.0\.2#', $output);
+        $this->assertPackageVersionMatchesRegularExpression('psr/log', '#1\.1\.3#', $output);
 
         // Update the upstream dependencies. This should not affect the installed dependencies;
-        // however, it will update the locked version of drupal/ctools to the latest
-        // avaiable version. The project will acquire this version the next time it is updated.
+        // however, it will update the locked version of psr/log to the latest
+        // available version. The project will acquire this version the next time it is updated.
         $process = $this->composer('update-upstream-dependencies');
         $this->assertTrue($process->isSuccessful(), $process->getOutput() . PHP_EOL . $process->getErrorOutput());
         $output = $process->getOutput() . PHP_EOL . $process->getErrorOutput();
-        $this->assertMatchesRegularExpression('#"drupal/ctools": "4\.0\.4"#', $output);
+        $this->assertMatchesRegularExpression('#"psr/log": "1\.1\.4"#', $output);
         $process = $this->composer('info', ['--format=json']);
         $output = $process->getOutput();
         $this->assertTrue($process->isSuccessful());
-        $this->assertPackageVersionMatchesRegularExpression('drupal/ctools', '#4\.0\.2#', $output);
+        $this->assertPackageVersionMatchesRegularExpression('psr/log', '#1\.1\.3#', $output);
 
-        // Now run `composer update` again. This should update drupal/ctools.
+        // Now run `composer update` again. This should update psr/log.
         $process = $this->composer('update');
         $this->assertTrue($process->isSuccessful(), $process->getOutput() . PHP_EOL . $process->getErrorOutput());
         $output = $process->getOutput() . PHP_EOL . $process->getErrorOutput();
@@ -168,8 +159,8 @@ class UpstreamManagementCommandTest extends TestCase
         $process = $this->composer('info', ['--format=json']);
         $output = $process->getOutput();
         $this->assertTrue($process->isSuccessful());
-        $this->assertPackageVersionMatchesRegularExpression('drupal/ctools', '#4\.#', $output);
-        $this->assertPackageVersionDoesNotMatchesRegularExpression('drupal/ctools', '#4\.0\.2#', $output);
+        $this->assertPackageVersionMatchesRegularExpression('psr/log', '#1\.1\.#', $output);
+        $this->assertPackageVersionDoesNotMatchesRegularExpression('psr/log', '#1\.1\.3#', $output);
     }
 
     public function sutFileContents($file)

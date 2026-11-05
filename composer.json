@@ -3,11 +3,11 @@
     "description": "Composer plugin that holds a series of scripts to manage upstreams in Pantheon",
     "type": "composer-plugin",
     "require-dev": {
-        "squizlabs/php_codesniffer": "^3.7",
-        "phpunit/phpunit": "^9.5",
-        "composer/composer": "^2.5",
-        "symfony/filesystem": "^5|^6",
-        "symfony/process": "^5|^6"
+        "squizlabs/php_codesniffer": "^3.13.6",
+        "phpunit/phpunit": "^9.6",
+        "composer/composer": "^2.9",
+        "symfony/filesystem": "^5|^6|^7",
+        "symfony/process": "^5|^6|^7"
     },
     "license": "MIT",
     "autoload": {
