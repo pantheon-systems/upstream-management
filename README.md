@@ -58,8 +58,17 @@ composer test
 
 ## Releasing
 
-This package is published on [Packagist](https://packagist.org/packages/pantheon-systems/upstream-management) and updated automatically when a new GitHub release is created.
+This package is published on [Packagist](https://packagist.org/packages/pantheon-systems/upstream-management).
+Create a GitHub release with a new semver tag (no `v` prefix, matching `1.0.0` and `1.0.1`); Packagist
+picks it up through its webhook. Merging to `main` alone releases nothing. Details in
+[DEPLOYMENT.md](DEPLOYMENT.md).
 
-1. Update `composer.json` if needed
-2. Create a new GitHub release with a semver tag (e.g. `v2.3.4`)
-3. Packagist picks up the new release automatically via webhook
+## Rollback
+
+- **When:** a new release breaks `upstream:require` or `upstream:update-dependencies` for custom upstreams.
+- **Recover:** revert the change on `main` and publish a new patch release so caret constraints resolve to
+  good code. Never delete or move a published tag.
+- **Verify:** packagist.org lists the new tag with the expected commit.
+- **Who:** `#ask-hosting` (developer-experience).
+
+Details: [DEPLOYMENT.md](DEPLOYMENT.md#rollback).
